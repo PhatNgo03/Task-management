@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-
+const validates = require("../validates/task.validate");
 const controller = require("../controller/task.controller");
 
 // Lấy danh sách
@@ -15,4 +15,8 @@ router.patch("/change-status/:id", controller.changeStatus);
 
 // Thay đổi trạng thái nhiều công việc
 router.patch("/change-multi", controller.changeMulti);
+
+// Tạo mới task
+router.post("/create",validates.create, controller.create);
+
 module.exports = router;
