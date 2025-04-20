@@ -19,4 +19,7 @@ router.patch("/change-multi", controller.changeMulti);
 // Tạo mới task
 router.post("/create",validates.create, controller.create);
 
+// Chỉnh sửa task
+router.patch("/edit/:id",validates.edit, controller.edit);
+
 module.exports = router;
