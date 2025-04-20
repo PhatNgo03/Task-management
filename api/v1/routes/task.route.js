@@ -22,4 +22,6 @@ router.post("/create",validates.create, controller.create);
 // Chỉnh sửa task
 router.patch("/edit/:id",validates.edit, controller.edit);
 
+// xóa task
+router.delete("/delete/:id", controller.delete);
 module.exports = router;
