@@ -11,6 +11,12 @@ module.exports.index = async (req, res) => {
     if(req.query.status){
       find.status = req.query.status;
     }
+    //Search 
+    let objectSearch = searchHelper(req.query);
+    if(objectSearch.regex){
+      find.title = objectSearch.regex;
+      }
+    //End Search
 
     //Pagination
     let initPagination = {
@@ -23,13 +29,7 @@ module.exports.index = async (req, res) => {
       req.query,
       countTasks 
     )
-    //Search 
-    let objectSearch = searchHelper(req.query);
-    if(objectSearch.regex){
-      find.title = objectSearch.regex;
-     }
    
-    //End Search
     //Pagination
     //sort
     const sort = {};
@@ -63,3 +63,28 @@ module.exports.detail = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi lấy chi tiết task" });
   }
 };
+
+//[PATCH] /api/v1/tasks/change-status/:id
+module.exports.changeStatus = async (req, res) => {
+  try{
+    const id = req.params.id;
+    const status = req.body.status;
+
+    await Task.updateOne({
+      _id: id, 
+    }, {
+      status: status
+    });
+    res.json({
+      code: 200,
+      message: "Cập nhật trạng thái thành công!"
+    });
+  }
+  catch (error){
+    res.json({
+      code: 404,
+      message: "Không tồn tại!"
+    });
+  }
+  
+}
