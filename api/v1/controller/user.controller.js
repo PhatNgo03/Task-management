@@ -140,6 +140,7 @@ module.exports.forgotPassword = async(req, res) => {
   }
 }
 
+//  [POST] /api/v1/users/password/otp
 module.exports.otpPassword = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -162,6 +163,69 @@ module.exports.otpPassword = async (req, res) => {
       code: 200,
       message: "Xác thực thành công!",
       token: token
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống!"
+    });
+  }
+};
+
+//  [POST] /api/v1/users/password/reset
+module.exports.resetPassword = async (req, res) => {
+  try {
+    // console.log(req.cookies.token);
+
+    const token = req.body.token;
+    const password = req.body.password;
+
+    const user = await User.findOne({
+      tokenUser : token
+    })
+    if(md5(password) == user.password){
+      res.json({
+        code: 400,
+        message: "Vui lòng nhập mật khẩu mới khác mật cũ"
+      });
+      return;
+    }
+
+    await User.updateOne(
+    {
+      tokenUser : token,
+    },
+    {
+      password : md5(password)
+    }
+  );
+    return res.json({
+      code: 200,
+      message: "Đổi mật khẩu thành công!"
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống!"
+    });
+  }
+};
+
+
+//  [GET] /api/v1/users/detail
+module.exports.detail = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+
+    const user = await User.findOne({
+      tokenUser : token,
+      deleted : false
+    }).select("-password -token");
+
+    res.json({
+      code: 200,
+      message: "Thành công!",
+      infoUser : user
     });
   } catch (error) {
     return res.status(500).json({
