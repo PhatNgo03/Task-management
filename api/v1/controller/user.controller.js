@@ -213,13 +213,31 @@ module.exports.resetPassword = async (req, res) => {
 };
 
 
-//  [GET] /api/v1/users/detail
+//  [GET] /api/v1/users/list
 module.exports.detail = async (req, res) => {
   try {
     res.json({
       code: 200,
       message: "Thành công!",
       infoUser : req.user
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống!"
+    });
+  }
+};
+
+//  [GET] /api/v1/users/list
+module.exports.list = async (req, res) => {
+  try {
+    const users = await User.find({deleted : false}).select("fullName email");
+
+    res.json({
+      code: 200,
+      message: "Thành công!",
+      users : users
     });
   } catch (error) {
     return res.status(500).json({
