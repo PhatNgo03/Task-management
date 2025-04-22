@@ -112,7 +112,7 @@ module.exports.forgotPassword = async(req, res) => {
     const objectForgotPassword = {
       email : email,
       otp: otp,
-      expireAt : Date.now() + timeExpire*60 
+      expireAt: new Date(Date.now() + timeExpire * 60 * 1000) // 5 phút
     }
 
     const forgotPassword = new ForgotPassword(objectForgotPassword);
@@ -139,3 +139,34 @@ module.exports.forgotPassword = async(req, res) => {
     });
   }
 }
+
+module.exports.otpPassword = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    const result = await ForgotPassword.findOne({ email, otp });
+
+    if (!result) {
+      return res.status(400).json({
+        code: 400,
+        message: "Mã OTP không hợp lệ!"
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    const token = user.tokenUser;
+    res.cookie("token", token);
+
+    return res.json({
+      code: 200,
+      message: "Xác thực thành công!",
+      token: token
+    });
+  } catch (error) {
+    return res.status(500).json({
+      code: 500,
+      message: "Lỗi hệ thống!"
+    });
+  }
+};
