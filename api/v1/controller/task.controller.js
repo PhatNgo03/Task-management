@@ -143,6 +143,27 @@ module.exports.changeMulti = async (req, res) => {
 module.exports.create = async (req, res) => {
   try{
     req.body.createdBy = req.user.id; //get id of user created task
+
+     // Kiểm tra nếu có taskParentId được truyền vào
+     if (req.body.taskParentId) {
+      const parentTask = await Task.findOne({ _id: req.body.taskParentId, deleted: false });
+
+      // Nếu không tồn tại task cha thì trả về lỗi
+      if (!parentTask) {
+        return res.status(400).json({
+          code: 400,
+          message: "Id không tồn tại hoặc đã bị xóa!",
+        });
+      }
+
+      // Không cho phép task cha là chính nó
+      if (req.body.taskParentId === req.body._id) {
+        return res.status(400).json({
+          code: 400,
+          message: "Id không tồn tại hoặc đã bị xóa!",
+        });
+      }
+    }
     const task = new Task(req.body);
     const data = await task.save();
 

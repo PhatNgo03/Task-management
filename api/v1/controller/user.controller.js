@@ -239,7 +239,7 @@ module.exports.list = async (req, res) => {
       message: "Thành công!",
       users : users
     });
-  } catch (error) {
+  } catch (error) {     
     return res.status(500).json({
       code: 500,
       message: "Lỗi hệ thống!"
