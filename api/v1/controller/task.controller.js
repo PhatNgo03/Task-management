@@ -6,7 +6,11 @@ const searchHelper = require("../../../helpers/search.js");
 module.exports.index = async (req, res) => {
   try {
     const find = {
-      deleted: false
+      deleted: false,
+      $or: [
+        { createdBy: req.user.id}, 
+        { listUser: req.user.id}
+      ]
     }
     if(req.query.status){
       find.status = req.query.status;
