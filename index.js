@@ -6,25 +6,26 @@ const cookieParser = require('cookie-parser');
 require("dotenv").config();
 
 // Import route
-const routesApiVer1  = require("./api/v1/routes/index.route");
+const routesApiVer1 = require("./api/v1/routes/index.route");
 
 const app = express();
-const port = process.env.port;
 
+// Kết nối database
 database.connect();
 
-//Cookie parser
+// Cookie parser
 app.use(cookieParser());
 
-// parse application/json
-app.use(bodyParser.json())
+// Parse application/json
+app.use(bodyParser.json());
 
-//CORS
-app.use(cors());
+// CORS
+app.use(cors({
+  origin: '*',
+  credentials: true
+}));
 
 // Routes version 1
 routesApiVer1(app);
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
-});
+module.exports = app; 
