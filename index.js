@@ -28,4 +28,10 @@ app.use(cors({
 // Routes version 1
 routesApiVer1(app);
 
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`App is running locally on http://localhost:${port}`);
+  });
+}
 module.exports = app; 
